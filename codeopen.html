@@ -23,7 +23,7 @@
 
     <script>
       require(["esri/config", "esri/Map", "esri/views/MapView","esri/widgets/Legend","esri/layers/CSVLayer","esri/widgets/BasemapToggle",
-      "esri/widgets/BasemapGallery"], function(esriConfig, Map, MapView,Legend,CSVLayer,BasemapToggle,BasemapGallery) {
+      "esri/widgets/BasemapGallery","esri/widgets/Search"], function(esriConfig, Map, MapView,Legend,CSVLayer,BasemapToggle,BasemapGallery,Search) {
 
         esriConfig.apiKey = "AAPK56e3ac027f044c4089d8ceec232fc05dYaOuzVRzm8tMRqvzOvDvIEevbqJ85yppn9PacU6cy4duurJrVK9wo_8BcWO8i8bi";
         
@@ -147,6 +147,17 @@
      });
       view.ui.add(basemapToggle,"bottom-right");
       
+	  const searchWidget = new Search({
+	    view: view
+	  });
+	  // Adds the search widget below other elements in
+	  // the top left corner of the view
+	  view.ui.add(searchWidget, {
+	    position: "top-right",
+	    index: 2
+	  });
+	  
+	  
       });
       
       
