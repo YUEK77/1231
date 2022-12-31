@@ -1,0 +1,159 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>湖北省旅游综合可视化</title>
+    
+
+    <style>
+      html,
+      body,
+      #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <link rel="stylesheet" href="./css/style.css">
+		<link rel="stylesheet" href="https://js.arcgis.com/4.19/esri/themes/light/main.css" />
+		<script src="https://js.arcgis.com/4.19/"></script>
+		<script src="./js/map.js"></script>
+
+    <script>
+      require(["esri/config", "esri/Map", "esri/views/MapView","esri/widgets/Legend","esri/layers/CSVLayer","esri/widgets/BasemapToggle",
+      "esri/widgets/BasemapGallery"], function(esriConfig, Map, MapView,Legend,CSVLayer,BasemapToggle,BasemapGallery) {
+
+        esriConfig.apiKey = "AAPK56e3ac027f044c4089d8ceec232fc05dYaOuzVRzm8tMRqvzOvDvIEevbqJ85yppn9PacU6cy4duurJrVK9wo_8BcWO8i8bi";
+        
+        const popup = {
+		content: [
+			{
+				type: 'fields',
+				fieldInfos: [
+					{
+						fieldName: 'name',
+						label: '景点名称',
+						isEditable: true,
+						tooltip: '',
+						visible: true,
+						format: null,
+						stringFieldOption: 'text-box',
+					},
+					{
+						fieldName: 'address',
+						label: '地址',
+						isEditable: true,
+						tooltip: '',
+						visible: true,
+						format: null,
+						stringFieldOption: 'text-box',
+					},
+					{
+						fieldName: 'rating',
+						label: '评分',
+						isEditable: true,
+						tooltip: '',
+						visible: true,
+						format: null,
+						stringFieldOption: 'text-box',
+					},
+					{
+						fieldName: 'cost',
+						label: '人均消费',
+						isEditable: true,
+						tooltip: '',
+						visible: true,
+						format: null,
+						stringFieldOption: 'text-box',
+					},
+					{
+						fieldName: 'tel',
+						label: '电话',
+						isEditable: true,
+						tooltip: '',
+						visible: true,
+						format:null,
+						stringFieldOption: 'text-box',
+					},
+				],
+			},
+		],
+	};
+    const layer = new CSVLayer({
+		url:"https://yuek77.github.io/1231/国家级景点.csv",
+		title: '国家级景点',
+		latitudeField: 'lat84',
+		longitudeField: 'lng84',
+		outFields: ['name','address','rating','cost','tel'],
+		popupTemplate: popup
+	});
+	layer.renderer = {
+		type: 'simple', // autocasts as new SimpleRenderer()
+		symbol: {
+			type: 'simple-marker',
+			color: '#e6baa1',
+			outline: null,
+			size: 5,
+		},
+	};
+        const Rlayer = new CSVLayer({
+        url: "https://yuek77.github.io/1231/国家级景点.csv",
+        title: '国家级景点热力值',
+        latitudeField: 'lat84',
+        longitudeField: 'lng84',
+    });
+    Rlayer.renderer = {
+        type: "heatmap",
+        colorStops: [{ color: "rgba(63, 40, 102, 0)", ratio: 0 },
+          { color: "#d8ebf0", ratio: 0.05 },
+                    { color: "#ade4f0", ratio: 0.20 },          
+                    { color: "#96cae6", ratio: 0.35 },
+                    { color: "#7aafd2", ratio: 0.40 },         
+                    { color: "#3a7fc8", ratio: 0.55 },
+                    { color: "#1951c8", ratio: 0.65 },
+                    { color: "#303fc8", ratio: 0.75 },
+                    { color: "#3814c8", ratio: 0.85 },         
+                    { color: "#6400c8", ratio: 1 }],
+        maxDensity: 0.01,
+        minDensity: 0
+    };
+
+        
+        const map = new Map({
+          basemap: "arcgis-streets" ,// Basemap layer service
+          layers: [layer]
+        });
+                
+        const view = new MapView({
+          map: map,
+          center: [114.30, 30.60], // Longitude, latitude
+          zoom: 6, // Zoom level
+          container: "viewDiv" // Div element
+        });
+        map.add(Rlayer);
+        map.add(layer);
+        
+        view.ui.add(
+        new Legend({
+          view: view
+        }),
+        "bottom-left"
+      );
+        const basemapToggle = new BasemapToggle({
+        view: view,
+        nextBasemap: "arcgis-streets(night)"
+     });
+      view.ui.add(basemapToggle,"bottom-right");
+      
+      });
+      
+      
+    </script>
+
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
